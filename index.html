@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Traitement des Prêts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f5f5f5;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .preview {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .loading {
+            display: none;
+            margin: 10px 0;
+            color: #666;
+        }
+        .error {
+            color: #dc3545;
+            padding: 15px;
+            border-radius: 4px;
+            background: #ffe6e6;
+            margin: 10px 0;
+            border: 1px solid #dc3545;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .property-evaluation {
+            background: #e8f4f8;
+        }
+        .approval-decision {
+            background: #f8f9e8;
+        }
+        .solvency-info {
+            background: #f0f8f1;
+        }
+        .client-info {
+            background: #f8f0f8;
+        }
+        .status-solvent {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-not-solvent {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        .approved {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .refused {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .decision-details {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+        .decision-header {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+        }
+        
+        .decision-status {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .decision-details {
+            margin: 10px 0;
+        }
+        
+        .decision-metrics {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+        
+        .decision-reasons {
+            margin: 10px 0;
+        }
+        
+        .decision-recommendations {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .metric-item {
+            margin-bottom: 5px;
+        }
+        
+        .reason-item {
+            margin-bottom: 5px;
+            color: #dc3545;
+        }
+        
+        .recommendation-item {
+            margin-bottom: 5px;
+            color: #666;
+        }
+        
+        .section-content {
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+
+        .property-value {
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        .status-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .approval-refused {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .approval-approved {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .metrics-label {
+            font-weight: 500;
+            color: #666;
+            margin-right: 5px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Traitement des Demandes de Prêt</h2>
+        
+        <div class="form-group">
+            <label for="fileInput">Fichier de demande de prêt :</label><br>
+            <input type="file" id="fileInput" accept=".txt">
+        </div>
+        
+        <div id="preview" class="preview" style="display: none;">
+            <h3>Aperçu du contenu :</h3>
+            <div id="fileContent"></div>
+        </div>
+
+        <button id="submitBtn" class="button" disabled>Traiter la demande</button>
+        <div id="loading" class="loading">Traitement en cours...</div>
+    </div>
+
+    <div id="error" class="error" style="display: none;"></div>
+
+    <div id="result" class="card" style="display: none;">
+        <h3>Résultats du traitement</h3>
+        
+        <div class="section property-evaluation">
+            <div class="section-title">Évaluation de la Propriété</div>
+            <div id="propertyDetails"></div>
+        </div>
+
+        <div class="section approval-decision">
+            <div class="section-title">Décision d'Approbation</div>
+            <div id="approvalDetails"></div>
+        </div>
+
+        <div class="section solvency-info">
+            <div class="section-title">Statut de solvabilité</div>
+            <span id="solvencyStatus"></span>
+        </div>
+        
+        <div class="section client-info">
+            <div class="section-title">Informations client</div>
+            <div id="clientDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:5000';
+        const elements = {
+            fileInput: document.getElementById('fileInput'),
+            preview: document.getElementById('preview'),
+            fileContent: document.getElementById('fileContent'),
+            submitBtn: document.getElementById('submitBtn'),
+            loading: document.getElementById('loading'),
+            error: document.getElementById('error'),
+            result: document.getElementById('result'),
+            propertyDetails: document.getElementById('propertyDetails'),
+            approvalDetails: document.getElementById('approvalDetails'),
+            solvencyStatus: document.getElementById('solvencyStatus'),
+            clientDetails: document.getElementById('clientDetails')
+        };
+
+        let currentContent = '';
+
+        elements.fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentContent = e.target.result;
+                    elements.fileContent.textContent = currentContent;
+                    elements.preview.style.display = 'block';
+                    elements.submitBtn.disabled = false;
+                    
+                    // Reset displays
+                    elements.error.style.display = 'none';
+                    elements.result.style.display = 'none';
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', async () => {
+            try {
+                // Reset UI
+                elements.error.style.display = 'none';
+                elements.result.style.display = 'none';
+                elements.loading.style.display = 'block';
+                elements.submitBtn.disabled = true;
+
+                // Process request
+                const processResponse = await fetch(`${API_BASE_URL}/process`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: currentContent }),
+                });
+
+                const responseData = await processResponse.json();
+
+                if (!processResponse.ok) {
+                    elements.error.textContent = responseData.evaluation || 
+                                               responseData.message || 
+                                               'Une erreur est survenue';
+                    elements.error.style.display = 'block';
+                    return;
+                }
+
+                // Display property evaluation
+                if (responseData.property_evaluation) {
+                    elements.propertyDetails.innerHTML = responseData.property_evaluation
+                        .split('\n')
+                        .map(line => `<div>${line}</div>`)
+                        .join('');
+                }
+
+                // Update the approval decision display part in the script
+                if (responseData.approval_decision) {
+                    const decisionLines = responseData.approval_decision.split('\n');
+                    let decisionHtml = '<div class="section-content">';
+                    
+                    // Process each line of the decision
+                    decisionLines.forEach(line => {
+                        if (line.startsWith('DÉCISION:')) {
+                            const status = line.includes('APPROUVÉ') ? 'approved' : 'refused';
+                            decisionHtml += `<div class="decision-status approval-${status}">
+                                ${line.trim()}
+                            </div>`;
+                        }
+                        else if (line.startsWith('Score de Risque:') || line.startsWith('Probabilité de Défaut:')) {
+                            decisionHtml += `<div class="metric-item">
+                                <span class="metrics-label">${line.trim()}</span>
+                            </div>`;
+                        }
+                        else if (line.startsWith('Raisons:')) {
+                            decisionHtml += `<div class="decision-reasons">
+                                <strong>Raisons:</strong>`;
+                        }
+                        else if (line.startsWith('-')) {
+                            decisionHtml += `<div class="reason-item">${line.trim()}</div>`;
+                        }
+                        else if (line.startsWith('Recommandations:')) {
+                            decisionHtml += `</div><div class="decision-recommendations">
+                                <strong>Recommandations:</strong>`;
+                        }
+                        else if (line.trim() && !line.startsWith('EVALUATION')) {
+                            decisionHtml += `<div class="recommendation-item">${line.trim()}</div>`;
+                        }
+                    });
+                    
+                    decisionHtml += '</div>';
+                    elements.approvalDetails.innerHTML = decisionHtml;
+                }
+
+                // Update the property evaluation display
+                if (responseData.property_evaluation) {
+                    const evalLines = responseData.property_evaluation.split('\n');
+                    let evalHtml = '<div class="section-content">';
+                    
+                    evalLines.forEach(line => {
+                        if (line.startsWith('EVALUATION')) {
+                            evalHtml += `<div class="decision-header">${line.trim()}</div>`;
+                        }
+                        else if (line.startsWith('Valeur Estimée:') || line.startsWith('Analyse du Marché:')) {
+                            const [label, value] = line.split(':');
+                            evalHtml += `<div class="metric-item">
+                                <span class="status-label">${label}:</span>
+                                <span class="property-value">${value.trim()}</span>
+                            </div>`;
+                        }
+                        else if (line.trim()) {
+                            evalHtml += `<div class="metric-item">${line.trim()}</div>`;
+                        }
+                    });
+                    
+                    evalHtml += '</div>';
+                    elements.propertyDetails.innerHTML = evalHtml;
+                }
+
+                // Get credit check if we have a client_id
+                if (responseData.client_id) {
+                    const solvencyResponse = await fetch(`${API_BASE_URL}/credit-check/${responseData.client_id}`);
+                    
+                    if (!solvencyResponse.ok) {
+                        throw new Error((await solvencyResponse.json()).message || 
+                                      'Échec de la vérification du crédit');
+                    }
+
+                    const solvencyData = await solvencyResponse.json();
+                    
+                    // Display client info
+                    if (solvencyData.client_data) {
+                        elements.clientDetails.innerHTML = Object.entries(solvencyData.client_data)
+                            .map(([key, value]) => `<div><strong>${key}:</strong> ${value}</div>`)
+                            .join('');
+                    }
+
+                    // Display solvency status
+                    if (solvencyData.solvency) {
+                        elements.solvencyStatus.textContent = solvencyData.solvency === 'solvent' ? 
+                            'Solvable' : 'Non solvable';
+                        elements.solvencyStatus.className = solvencyData.solvency === 'solvent' ? 
+                            'status-solvent' : 'status-not-solvent';
+                    }
+                }
+
+                elements.result.style.display = 'block';
+
+            } catch (err) {
+                elements.error.textContent = `Erreur: ${err.message}`;
+                elements.error.style.display = 'block';
+            } finally {
+                elements.loading.style.display = 'none';
+                elements.submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

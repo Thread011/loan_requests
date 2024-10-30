@@ -1,0 +1,9 @@
+Nom du Client: Sophie Martin
+Adresse: 8 Rue de la Paix, 69006 Lyon, France
+Email: sophie.martin@email.com
+Numéro de Téléphone: +33 6 45 67 89 12
+Montant du Prêt Demandé: 320000 EUR
+Durée du Prêt: 25 ans
+Description de la Propriété: Appartement de 65m² dans résidence des années 80. État général correct mais quelques rafraîchissements à prévoir. Double vitrage partiel, chauffage collectif, 2 chambres, 1 salle de bain.
+Revenu Mensuel: 3500 EUR
+Dépenses Mensuelles: 2200 EUR

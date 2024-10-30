@@ -1,0 +1,9 @@
+Nom du Client: Martin Dupuis
+Adresse: 15 Rue des Lilas, 69003 Lyon, France
+Email: martin.dupuis@email.com
+Numéro de Téléphone: +33 6 98 76 54 32
+Montant du Prêt Demandé: 280000 EUR
+Durée du Prêt: 30 ans
+Description de la Propriété: Appartement ancien de 45m² nécessitant des travaux importants. Humidité dans les murs, électricité à refaire, simple vitrage. Situé au rez-de-chaussée dans une zone en développement.
+Revenu Mensuel: 2200 EUR
+Dépenses Mensuelles: 1800 EUR

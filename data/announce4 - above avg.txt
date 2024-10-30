@@ -1,0 +1,9 @@
+Nom du Client: Philippe Lambert
+Adresse: 42 Avenue Victor Hugo, 75016 Paris, France
+Email: philippe.lambert@email.com
+Numéro de Téléphone: +33 6 23 45 67 89
+Montant du Prêt Demandé: 850000 EUR
+Durée du Prêt: 20 ans
+Description de la Propriété: Bel appartement moderne de 95m² dans immeuble haussmannien. Rénové récemment, parquet, moulures, cheminée. Cuisine équipée moderne, 3 chambres, lumineux, 3ème étage avec ascenseur.
+Revenu Mensuel: 12000 EUR
+Dépenses Mensuelles: 4500 EUR

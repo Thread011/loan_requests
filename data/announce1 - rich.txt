@@ -1,0 +1,9 @@
+Nom du Client: Alexandre Dubois
+Adresse: 25 Avenue Montaigne, 75008 Paris, France
+Email: alexandre.dubois@email.com
+Numéro de Téléphone: +33 6 12 34 56 78
+Montant du Prêt Demandé: 2500000 EUR
+Durée du Prêt: 25 ans
+Description de la Propriété: Appartement de luxe de 250m² avec terrasse panoramique, entièrement rénové, situé dans le Triangle d'Or. Prestations haut de gamme, triple exposition, vue sur la Tour Eiffel. 4 chambres, 3 salles de bains en marbre, cuisine équipée par un chef étoilé, domotique dernière génération.
+Revenu Mensuel: 35000 EUR
+Dépenses Mensuelles: 8000 EUR
